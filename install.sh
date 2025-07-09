@@ -59,7 +59,7 @@ source ./whisker/bundle
 check_root
 greet
 request_sudo
-#install_yay
+install_yay
 
 # Bundles
 mandatory_bundles=(system audio fonts hyprland waybar alacritty thunar psd gtk zsh)
