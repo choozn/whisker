@@ -1,0 +1,21 @@
+# Installation config
+whisker_path="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)"
+install_path="$(cd -- "$(dirname -- "${BASH_SOURCE[1]}")" &>/dev/null && pwd)"
+install_name="$(basename $install_path)"
+backup_root="$HOME/${install_name}_backups"
+backup_folder="${backup_root}/backup_$(date +'%Y-%m-%d_%H-%M-%S')"
+
+# Whisker config
+bundle_folder="bundles"
+bundle_config="bundle.conf"
+installs_path="installs"
+
+# Source whisker utils
+source "$whisker_path/util"
+source "$whisker_path/bundle"
+source "$whisker_path/install"
+
+whisker() {
+    request_sudo
+    install_whisker
+}

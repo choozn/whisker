@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+# Copyright (C) 2025 choozn
+# Live reload script
+
+# Reload hyprland
+hyprctl reload
+
+# Reload theme
+source $HOME/.config/hypr/scripts/theme
+
+# Restart waybar
+pkill waybar &
+hyprctl dispatch exec $HOME/.config/hypr/scripts/waybar &
