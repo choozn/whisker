@@ -45,7 +45,7 @@ install_yay() {
 
 # Installation config
 install_name="whisker"
-install_path="$HOME/projects/${install_name}"
+install_path="$HOME/${install_name}"
 backup_root="$HOME/${install_name}_backups"
 backup_folder="${backup_root}/${install_name}_backup_$(date +'%Y-%m-%d_%H-%M-%S')"
 
