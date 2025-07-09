@@ -84,10 +84,10 @@ safe_link() {
             return 1
         }
 
-        #mv "$dest" "$backup_path" || {
-        #  echo "[!] Failed to move existing $dest to backup $backup_path."
-        #  return 1
-        #}
+        mv "$dest" "$backup_path" || {
+            echo "[!] Failed to move existing $dest to backup $backup_path."
+            return 1
+        }
 
         echo "[!] Backed up $dest to $backup_path."
     fi
@@ -98,10 +98,10 @@ safe_link() {
         return 1
     }
 
-    #ln -sf "$src" "$dest" || {
-    #  echo "[!] Failed to link $dest to $src."
-    #  return 1
-    #}
+    ln -sf "$src" "$dest" || {
+        echo "[!] Failed to link $dest to $src."
+        return 1
+    }
 
     echo "[✓] Linked $dest → $src. ($dest now points to $src.)"
 }
