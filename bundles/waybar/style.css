@@ -1,0 +1,98 @@
+/*
+ * Waybar Style Config
+ * Copyright (C) 2025 choozn
+ */
+
+@import url("../../.cache/wal/colors-waybar.css");
+
+/* Reset all styles */
+* {
+  border: none;
+  min-height: 0;
+  margin: 0;
+}
+
+/* Set font styles */
+* {
+  font-family: "JetBrains Mono", "Iosevka Nerd Font", sans-serif;
+  font-size: 12px;
+  color: white;
+}
+
+tooltip {
+  border-radius: 10px;
+  border-width: 2px;
+  border-style: solid;
+  border-radius: 12px;
+  border-color: rgba(255, 255, 255, 0.35);
+}
+
+tooltip label {
+  padding-right: 2px;
+  padding-left: 2px;
+}
+
+window {
+  background-color: alpha(@background, 0.5);
+  transition-property: background-color;
+  transition-duration: 0.4s;
+  border-radius: 0px 0px 12px 12px;
+  padding: 20px 10px;
+}
+
+window#waybar.hidden {
+  opacity: 0.3;
+}
+
+window#waybar > * {
+  padding: 0 8px;
+}
+
+#tray {
+  background-color: #fff;
+}
+
+#tray > .passive {
+  -gtk-icon-effect: dim;
+}
+
+#tray > .needs-attention {
+  -gtk-icon-effect: highlight;
+}
+
+#battery,
+#clock,
+#cpu,
+#disk,
+#memory,
+#mode,
+#window,
+#network,
+#pulseaudio,
+#tray,
+#bluetooth,
+#backlight,
+#workspaces {
+  background-color: alpha(@background, 0.4);
+  padding: 0px 8px;
+  border-radius: 12px;
+  margin: 6px 2px;
+}
+
+#workspaces button {
+  padding: 6px 7px;
+  margin: 0px 1px;
+  border-radius: 6px;
+  border: none;
+}
+
+#workspaces button.active {
+  background: rgba(255, 255, 255, 0.07);
+}
+
+#workspaces button:hover {
+  transition: 0.1s all;
+  background: rgba(255, 255, 255, 0.07);
+  box-shadow: none;
+  text-shadow: none;
+}
