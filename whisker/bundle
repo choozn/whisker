@@ -66,7 +66,7 @@ check_bundle() {
         fi
     done
 
-    for func in pre post; do
+    for func in pre pre_link post; do
         if ! declare -f "$func" >/dev/null; then
             echo "[!] You attempted to load a broken bundle. Exiting."
             echo "[!] Function '$func' is not defined."
@@ -77,7 +77,7 @@ check_bundle() {
 
 unload_bundle() {
     unset title bundle_id packages
-    unset -f pre post
+    unset -f pre pre_link post
 }
 
 install_bundle() {
@@ -95,12 +95,15 @@ install_bundle() {
     echo "[!] Running preinstallation script."
     pre
 
-    echo "[!] Linking bundle files."
-    link_files ${files[@]}
-
     # Install packages as specified in the bundle
     echo "[!] Installing packages."
     install_packages "${packages[@]}"
+
+    echo "[!] Running prelinking script."
+    pre_link
+
+    echo "[!] Linking bundle files."
+    link_files ${files[@]}
 
     # Run postinstall script
     echo "[!] Running postinstallation script."
