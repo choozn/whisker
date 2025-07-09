@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+# Copyright (C) 2025 choozn
+# Screenshot script
+
+show_notification() {
+    notify-send -h string:x-canonical-private-synchronous:hypr-cfg -u low "Screenshot copied to your clipboard."
+}
+
+grim -g "$(slurp -d)" - | wl-copy && show_notification
