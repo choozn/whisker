@@ -1,0 +1,65 @@
+#!/usr/bin/env bash
+# Copyright (C) 2025 choozn
+# Wallpaper script
+
+load_config() {
+    local config_file="$1"
+
+    if [[ ! -f "$config_file" ]]; then
+        echo "Config file not found: $config_file" >&2
+        return 1
+    fi
+
+    while IFS= read -r line || [[ -n "$line" ]]; do
+        [[ -z "$line" || "$line" =~ ^[[:space:]]*# ]] && continue
+
+        if [[ "$line" =~ ^\$([a-zA-Z_][a-zA-Z0-9_]*)[[:space:]]*=[[:space:]]*(.*) ]]; then
+            local var_name="${BASH_REMATCH[1]}"
+            local var_value="${BASH_REMATCH[2]}"
+
+            var_value="${var_value%\"}"
+            var_value="${var_value#\"}"
+
+            eval "resolved_value=\"$var_value\""
+
+            export "${var_name}=${resolved_value}"
+        fi
+    done <"$config_file"
+}
+
+load_config "$HOME/.theme/theme.conf"
+
+if pgrep -x swaybg >/dev/null; then
+    pkill swaybg
+fi
+
+# PyWal
+if [ -z "$wallpaper" ]; then
+    arguments+="--iterative -i '$HOME/.theme/wallpapers/' "
+else
+    arguments+="-i '$HOME/.theme/wallpapers/$wallpaper' "
+fi
+
+if [ -n "$wallpaper_theme_contrast" ]; then
+    arguments+="--contrast $wallpaper_theme_contrast "
+fi
+
+if [ -n "$wallpaper_theme_saturation" ]; then
+    arguments+="--saturate $wallpaper_theme_saturation "
+fi
+
+if [ "$wallpaper_theme_type" == "light" ]; then
+    arguments+="-l "
+fi
+
+if [ -n "$custom_colors_file" ]; then
+    arguments+="--theme '$custom_colors_file' "
+fi
+
+eval wal $arguments
+
+# Prevent import error on first install
+hyprctl reload
+
+# Set gtk-theme
+gsettings set org.gnome.desktop.interface gtk-theme "$gtk_theme"

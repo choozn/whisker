@@ -1,0 +1,124 @@
+install_packages() {
+    local packages=("$@")
+
+    # Check if yay exists
+    if command -v yay &>/dev/null; then
+        use_yay=true
+    else
+        use_yay=false
+    fi
+
+    for pkg in "${packages[@]}"; do
+        if pacman -Qq "$pkg" &>/dev/null; then
+            echo "[!] Package '$pkg' is already installed. Skipping."
+            continue
+        fi
+
+        if $use_yay; then
+            if yay -S --noconfirm "$pkg"; then
+                echo "[!] Installed package '$pkg'."
+                continue
+            else
+                echo "[!] Failed to install '$pkg' with yay, falling back to pacman."
+            fi
+        fi
+
+        sudo pacman -S --noconfirm "$pkg" || {
+            echo "[!] Failed to install '$pkg' with pacman."
+            handle_install_error "$pkg"
+        }
+    done
+}
+
+handle_install_error() {
+    local pkg="$1"
+    echo "[!] None of the installed package managers could install the package $pkg."
+    echo "[!] Check your network connection and try again later."
+    exit 1
+}
+
+load_bundle() {
+    local bundle="$1"
+    bundle_path="${install_path}/${bundle_folder}/${bundle}"
+    bundle_file="$bundle_path/${bundle_config}"
+
+    cd "$bundle_path"
+
+    if [ -f "$bundle_file" ]; then
+        source "$bundle_file"
+    else
+        print_centered_title "Broken Bundle"
+        echo "[!] Failed to load bundle: $bundle. Exiting."
+        echo "[!] Tried to load from: $bundle_path"
+        exit 1
+    fi
+}
+
+check_bundle() {
+    for var in title bundle_id packages files; do
+        if ! declare -p "$var" &>/dev/null; then
+            echo "[!] You attempted to load a broken bundle ($bundle_id). Exiting."
+            echo "[!] Variable '$var' is not set or empty."
+            exit 1
+        fi
+    done
+
+    for func in pre pre_link post; do
+        if ! declare -f "$func" >/dev/null; then
+            echo "[!] You attempted to load a broken bundle. Exiting."
+            echo "[!] Function '$func' is not defined."
+            exit 1
+        fi
+    done
+}
+
+unload_bundle() {
+    unset title bundle_id packages
+    unset -f pre pre_link post
+    cd "$whisker_path"
+}
+
+install_bundle() {
+    local bundle="$1"
+
+    # Load bundle
+    load_bundle "${bundle}"
+    check_bundle
+
+    # Log installation step
+    print_centered_title "${title}"
+    echo "[!] Successfully loaded (bundle:${bundle_id})."
+
+    # Run preinstall script
+    echo "[!] Running preinstallation script."
+    cd "$bundle_path"
+    pre
+
+    # Install packages as specified in the bundle
+    echo "[!] Installing packages."
+    install_packages "${packages[@]}"
+
+    echo "[!] Running prelinking script."
+    cd "$bundle_path"
+    pre_link
+
+    echo "[!] Linking bundle files."
+    link_files ${files[@]}
+
+    # Run postinstall script
+    echo "[!] Running postinstallation script."
+    cd "$bundle_path"
+    post
+
+    # Unload bundle
+    echo "[!] Installed ${title}."
+    echo "[!] Unloading (bundle:${bundle_id})."
+    unload_bundle
+}
+
+install_bundles() {
+    local bundles=("$@")
+    for bundle in "${bundles[@]}"; do
+        install_bundle "${bundle}"
+    done
+}

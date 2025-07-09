@@ -1,0 +1,96 @@
+get_bundles_from_install() {
+    local install_file="$1"
+    echo $(grep -vE '^\s*$|^\s*#' "$install_file" | xargs)
+}
+
+custom_install() {
+    install_packages vi
+
+    local base="$installs_path/everything"
+    local tmp_file
+    local editor="${EDITOR:-vi}"
+
+    if [[ ! -f "$base" ]]; then
+        echo "Base install file not found: $base"
+        return 1
+    fi
+
+    tmp_file="$(mktemp)"
+    trap 'rm -f "$tmp_file"' EXIT
+
+    cat >"$tmp_file" <<'EOF'
+# Hello there!
+# This is a custom install configuration.
+# Please only continue if you know what you are doing. Partial installs might lead to broken features.
+#
+# Edit the lines below to suit your installation.
+# These lines can be re-ordered; they are executed from top to bottom.
+#
+# If you remove a line the respective bundle WILL NOT BE INSTALLED.
+
+EOF
+    cat "$base" >>"$tmp_file"
+
+    # Open custom install screen
+    "$editor" "$tmp_file"
+    clear
+    local bundles="$(get_bundles_from_install "$tmp_file")"
+
+    install_yay
+
+    read -r -a bundles <<<"$bundles"
+    install_bundles "${bundles[@]}"
+}
+
+install_whisker() {
+    local installs=()
+    local bundles
+    local selected_install
+    local custom_option="custom"
+    local default_option="default"
+    local default_path="$installs_path/$default_option"
+
+    if [ -d "$installs_path" ] && [ -z "$(find "$installs_path" -maxdepth 1 -type f -print -quit)" ]; then
+        echo "Installs directory is empty — nothing to install."
+    fi
+
+    # Make default index one
+    installs+=("$default_option")
+
+    # Gather install files
+    while IFS= read -r -d $'\0' file; do
+        local basefile
+        basefile=$(basename "$file")
+        if [[ "$basefile" != "$default_option" ]]; then
+            installs+=("$basefile")
+        fi
+    done < <(find "$installs_path" -maxdepth 1 -type f -print0)
+
+    # Make custom install the last index
+    installs+=("$custom_option")
+
+    # Check if any installs or options
+    if [ ${#installs[@]} -eq 0 ]; then
+        echo "No installs found in $installs_path"
+        return 1
+    fi
+
+    # Prompt user to select installation
+    echo "Select an install flavor:"
+    select selected_install in "${installs[@]}"; do
+        if [[ -z "$selected_install" ]]; then
+            echo "Invalid selection."
+        elif [[ "$selected_install" == "$custom_option" ]]; then
+            custom_install
+            break
+        else
+            bundles=$(get_bundles_from_install "${install_path}/${installs_path}/${selected_install}")
+            break
+        fi
+    done
+
+    clear
+    install_yay
+    read -r -a bundles <<<"$bundles"
+    install_bundles "${bundles[@]}"
+}

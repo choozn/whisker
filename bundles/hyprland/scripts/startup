@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+# Copyright (C) 2025 choozn
+# Startup script
+
+_ps=(waybar mako)
+for _prs in "${_ps[@]}"; do
+    if [[ $(pidof ${_prs}) ]]; then
+        killall -9 ${_prs}
+    fi
+done
+
+# Start polkit agent
+if [[ ! $(pidof polkit-mate-authentication-agent-1) ]]; then
+    /usr/lib/mate-polkit/polkit-mate-authentication-agent-1 &
+fi
+
+# Set theme
+~/.config/hypr/scripts/theme &
+
+# Apply theme
+~/.config/hypr/scripts/gtktheme &
+
+# Lauch notification daemon
+if [[ ! $(pidof mako) ]]; then
+    mako &
+fi
+
+# Lauch waybar
+~/.config/hypr/scripts/waybar &
+
+# Start mpd
+exec mpd &
+
+# Don't start upgrade after fresh install
+if [ ! -f "$HOME/.config/hypr/first.start" ]; then
+    alacritty --class "alacritty-float,alacritty-float" -e zsh -i -c "$HOME/.config/hypr/scripts/upgrade" &
+fi

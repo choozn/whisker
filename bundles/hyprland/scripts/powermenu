@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+# Copyright (C) 2025 choozn
+# Powermenu script
+
+echo \
+    'Suspend   | loginctl lock-session ${XDG_SESSION_ID-} & systemctl suspend
+Logout    | hyprctl dispatch exit
+Shutdown  | shutdown --poweroff 0
+Reboot    | shutdown --reboot 0
+Lock      | loginctl lock-session ${XDG_SESSION_ID-}
+Sleep     | systemctl hibernate' |
+    fzf +s --exact | cut -d "|" -f2 |
+    xargs -i -t zsh -c "{}" \
+        &>/dev/null

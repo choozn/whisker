@@ -1,0 +1,128 @@
+request_sudo() {
+    sudo -v || {
+        echo "[!] Failed to gain sudo access."
+        exit 1
+    }
+}
+
+install_yay() {
+    if ! command -v yay &>/dev/null; then
+        export base="$(pwd)"
+        sudo pacman -S --needed --noconfirm base-devel git
+        git clone https://aur.archlinux.org/yay-bin.git /tmp/buildyay
+        cd /tmp/buildyay
+        makepkg -o
+        makepkg -s --noconfirm
+        sudo pacman -U *.pkg.tar.zst --noconfirm
+        cd $base
+        rm -rf /tmp/buildyay
+    fi
+}
+
+link_files() {
+    local entries=("$@")
+    local is_empty=true
+
+    for entry in "${entries[@]}"; do
+        if [[ -n "$entry" ]]; then
+            is_empty=false
+            break
+        fi
+    done
+
+    if $is_empty; then
+        echo "[!] No files to link. Skipping."
+        return
+    fi
+
+    local i=0
+    local total=${#entries[@]}
+
+    while ((i < total)); do
+        local origin="${bundle_path}/${entries[i]}"
+
+        if ((i + 1 >= total)); then
+            echo "[!] Missing destination for origin '${entries[i]}'. Skipping."
+            break
+        fi
+
+        local destination="${entries[i + 1]}"
+
+        if [[ -z "$origin" || -z "$destination" || "$origin" == "$destination" ]]; then
+            echo "[!] Skipping invalid link entry: '${entries[i]} ${entries[i + 1]}'"
+            ((i += 2))
+            continue
+        fi
+
+        safe_link "$origin" "$destination"
+
+        ((i += 2))
+    done
+}
+
+print_line() {
+    local term_width
+    term_width=$(tput cols)
+    printf '%*s\n' "$term_width" '' | tr ' ' '-'
+}
+
+print_centered_title() {
+    local term_width=$(tput cols)
+    local title=" $1 "
+    local fill_char="-"
+    local fill_len=$(((term_width - ${#title}) / 2))
+
+    printf '%*s' "$fill_len" '' | tr ' ' "$fill_char"
+    printf "%s" "$title"
+    printf '%*s\n' "$fill_len" '' | tr ' ' "$fill_char"
+}
+
+safe_link() {
+    local src="$1"
+    local dest="$2"
+    local backup_folder="${backup_folder:-$HOME/.backup}"
+
+    # Resolve absolute path of source
+    src=$(realpath "$src") || {
+        echo "[!] Failed to resolve source path: $src"
+        return 1
+    }
+
+    # Do NOT resolve dest to avoid circular symlinks
+
+    backup_folder=$(realpath -m "$backup_folder") || {
+        echo "[!] Failed to resolve backup folder: $backup_folder"
+        return 1
+    }
+
+    # If destination exists and is not already the correct symlink
+    if [ -e "$dest" ] && [ ! "$(readlink -- "$dest")" = "$src" ]; then
+        local rel_path="${dest#/}" # relative to root
+        local backup_path="${backup_folder}/${rel_path}"
+
+        mkdir -p "$(dirname "$backup_path")" || {
+            echo "[!] Failed to create backup directory: $(dirname "$backup_path")"
+            return 1
+        }
+
+        sudo mv "$dest" "$backup_path" || {
+            echo "[!] Failed to move existing $dest to backup $backup_path."
+            return 1
+        }
+
+        echo "[!] Backed up $dest to $backup_path."
+    fi
+
+    # Ensure destination directory exists
+    mkdir -p "$(dirname "$dest")" || {
+        echo "[!] Failed to create directory: $(dirname "$dest")"
+        return 1
+    }
+
+    sudo ln -sf "$src" "$dest" || {
+        echo "[!] Failed to link $dest to $src."
+        return 1
+    }
+
+    echo "[!] Linked $dest → $src."
+}

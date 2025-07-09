@@ -1,0 +1,44 @@
+# Base system and UI
+system
+audio
+fonts
+hyprland
+waybar
+mako
+themes
+gtk
+wallpapers
+
+# Terminal, shell and nvim
+alacritty
+zsh
+nvim
+
+# Display manager (Login screen)
+ly
+
+# UI File manager
+thunar
+
+# Browser and profile sync deamon
+psd
+zen
+chromium
+
+# Firmware updating tool
+firmware
+
+# Multimedia programs
+vlc
+zathura
+
+# Development utils
+docker
+nix
+
+# Virtualization
+qemu
+
+# Common other programs
+syncthing
+common

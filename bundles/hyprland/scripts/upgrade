@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+# Copyright (C) 2025 choozn
+# System update script
+
+# Start system update
+cat <<"EOF"
+
+  ,-.       _,---._ __  / \
+ /  )    .-'       `./ /   \
+(  (   ,'            `/    /|
+ \  `-"             \'\   / |
+  `.              ,  \ \ /  |
+   /`.          ,'-`----Y   |    Time for an update, don't you think so?
+  (            ;        |   '
+  |  ,-.    ,-'         |  /
+  |  | (   |            | /
+  )  |  \  `.___________|/
+  `--'   `--'
+
+EOF
+
+if command -v topgrade &>/dev/null; then
+    topgrade --no-self-update
+elif command -v yay &>/dev/null; then
+    yay
+else
+    sudo pacman -Syu
+fi
+
+exec zsh

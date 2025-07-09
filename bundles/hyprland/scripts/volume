@@ -1,0 +1,50 @@
+#!/usr/bin/env bash
+# Copyright (C) 2025 choozn
+# Volume script
+
+get_volume() {
+    pulsemixer --get-volume | cut -d ' ' -f1
+}
+
+increase_volume() {
+    pulsemixer --max-volume 100 --change-volume +5
+    pulsemixer --unmute
+}
+
+decrease_volume() {
+    if [ "$(get_volume)" -gt 5 ]; then
+        pulsemixer --max-volume 100 --change-volume -5
+        pulsemixer --unmute
+    else
+        pulsemixer --mute
+        pulsemixer --set-volume 0
+    fi
+}
+
+toggle_mute() {
+    if [ "$(get_volume)" -eq 0 ]; then
+        pulsemixer --set-volume 5
+    fi
+    pulsemixer --toggle-mute
+}
+
+toggle_microphone() {
+    source="$(pulsemixer --list-sources | grep 'Default' | cut -d',' -f1 | cut -d' ' -f3)"
+    pulsemixer --id ${source} --toggle-mute
+}
+
+if command -v pulsemixer &>/dev/null; then
+    if [[ "$1" == "--get" ]]; then
+        echo "$(get_volume)%"
+    elif [[ "$1" == "--inc" ]]; then
+        increase_volume
+    elif [[ "$1" == "--dec" ]]; then
+        decrease_volume
+    elif [[ "$1" == "--toggle" ]]; then
+        toggle_mute
+    elif [[ "$1" == "--toggle-mic" ]]; then
+        toggle_microphone
+    else
+        echo "Usage: $0 --get | --inc | --dec | --toggle | --toggle-mic"
+    fi
+fi
