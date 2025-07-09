@@ -36,8 +36,8 @@ install_yay() {
         git clone https://aur.archlinux.org/yay-bin.git /tmp/buildyay
         cd /tmp/buildyay
         makepkg -o
-        makepkg -se
-        makepkg -i --noconfirm
+        makepkg -s --noconfirm
+        sudo pacman -U *.pkg.tar.zst --noconfirm
         cd $base
         rm -rf /tmp/buildyay
     fi
