@@ -30,7 +30,7 @@ EOF
 }
 
 install_yay() {
-    if command -v yay &>/dev/null; then
+    if ! command -v yay &>/dev/null; then
         export base="$(pwd)"
         sudo pacman -S --needed --noconfirm base-devel git
         git clone https://aur.archlinux.org/yay-bin.git /tmp/buildyay
