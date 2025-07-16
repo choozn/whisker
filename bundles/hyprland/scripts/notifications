@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+# Copyright (C) 2025 choozn
+# Notification script
+
+CONFIG_FILE="$HOME/.config/hypr/mako/config"
+
+if [[ ! `pidof mako` ]]; then
+	mako --config ${CONFIG_FILE}
+fi
