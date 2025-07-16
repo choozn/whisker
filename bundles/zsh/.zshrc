@@ -86,8 +86,7 @@ plugins=(
     zsh-autosuggestions
     zsh-history-substring-search
     zsh-nvm
-    zsh-lazyload
-#    zsh-autocomplete
+    zsh-autocomplete
 )
 
 source $ZSH/oh-my-zsh.sh
@@ -156,10 +155,12 @@ alias neofetch='fastfetch'
 # Vim input
 set -o vi
 
+# Autocomplete configuration
+zstyle ':autocomplete:*' delay 0.1
+
 # Turn off colorterm for transparency; This will break a clean exit from nvim!
 # unset COLORTERM
 # export TERM=xterm-old
 
 # Initialize zoxide
 eval "$(zoxide init zsh --cmd cd)"
-
