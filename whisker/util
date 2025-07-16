@@ -68,19 +68,28 @@ print_centered_title() {
 safe_link() {
     local src="$1"
     local dest="$2"
+    local backup_folder="${3:-$HOME/.backup}" # Default to ~/.backup if not provided
 
-    # Resolve absolute paths
-    src=$(realpath "$src")
-    dest=$("$dest") # Don't resolve to prevent circles
-    backup_folder=$(realpath -m "$backup_folder")
+    # Resolve absolute path of source
+    src=$(realpath "$src") || {
+        echo "[!] Failed to resolve source path: $src"
+        return 1
+    }
 
-    # If destination exists and is not already the right symlink
+    # Do NOT resolve dest to avoid circular symlinks
+
+    backup_folder=$(realpath -m "$backup_folder") || {
+        echo "[!] Failed to resolve backup folder: $backup_folder"
+        return 1
+    }
+
+    # If destination exists and is not already the correct symlink
     if [ -e "$dest" ] && [ ! "$(readlink -- "$dest")" = "$src" ]; then
-        local rel_path="${dest#/}" # remove leading slash for relative backup path
+        local rel_path="${dest#/}" # relative to root
         local backup_path="${backup_folder}/${rel_path}"
 
         mkdir -p "$(dirname "$backup_path")" || {
-            echo "[!] Failed to create backup directory $(dirname "$backup_path"). Exiting."
+            echo "[!] Failed to create backup directory: $(dirname "$backup_path")"
             return 1
         }
 
@@ -94,7 +103,7 @@ safe_link() {
 
     # Ensure destination directory exists
     mkdir -p "$(dirname "$dest")" || {
-        echo "[!] Failed to create directory $(dirname "$dest")"
+        echo "[!] Failed to create directory: $(dirname "$dest")"
         return 1
     }
 
@@ -103,5 +112,5 @@ safe_link() {
         return 1
     }
 
-    echo "[✓] Linked $dest → $src. ($dest now points to $src.)"
+    echo "[✓] Linked $dest → $src."
 }
