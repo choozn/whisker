@@ -1,4 +1,4 @@
-general.import = ["~/.config/hypr/alacritty/colors.toml", "~/.config/hypr/alacritty/fonts.toml"]
+general.import = ["./colors.toml", "./fonts.toml"]
 
 general.ipc_socket = true
 
