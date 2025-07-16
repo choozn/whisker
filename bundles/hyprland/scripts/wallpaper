@@ -5,23 +5,23 @@
 is_running="false"
 
 # Check if swaybg is already running
-if pgrep -x swaybg > /dev/null; then
-  is_running="true"
+if pgrep -x swaybg >/dev/null; then
+    is_running="true"
 fi
 
 # Kill all instances of swaybg
 if [ "$is_running" = "true" ]; then
-  pkill swaybg
+    pkill swaybg
 fi
 
 # Extract wallpaper from hyprtheme config file
 wallpaper=$(awk -F= '/^\$wallpaper/ {gsub(/^[ \t]+|[ \t]+$/, "", $2); print $2}' "$HOME/.config/hypr/hyprtheme.conf")
-wallpaper_path="$HOME/.config/hypr/wallpapers/$wallpaper"
+wallpaper_path="$HOME/.config/wallpapers/$wallpaper"
 
 # Start swaybg
 if [ "$is_running" = "true" ]; then
-  swaybg --output '*' --mode fill --image "$wallpaper_path" &
-  disown
+    swaybg --output '*' --mode fill --image "$wallpaper_path" &
+    disown
 else
-  swaybg --output '*' --mode fill --image "$wallpaper_path"
+    swaybg --output '*' --mode fill --image "$wallpaper_path"
 fi

@@ -4,7 +4,7 @@
 
 current_swallow="$(hyprctl getoption misc:enable_swallow | grep int: | cut --d ":" -f2 | xargs)"
 if [[ "$current_swallow" = "0" ]]; then
-  hyprctl reload
+    hyprctl reload
 else
-  hyprctl keyword misc:enable_swallow false
+    hyprctl keyword misc:enable_swallow false
 fi

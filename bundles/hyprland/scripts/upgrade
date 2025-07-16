@@ -3,7 +3,7 @@
 # System update script
 
 # Start system update
-cat << "EOF"
+cat <<"EOF"
 
   ,-.       _,---._ __  / \
  /  )    .-'       `./ /   \
@@ -19,12 +19,12 @@ cat << "EOF"
 
 EOF
 
-if command -v topgrade &> /dev/null; then
-  topgrade --no-self-update
-elif command -v yay &> /dev/null; then
-  yay
+if command -v topgrade &>/dev/null; then
+    topgrade --no-self-update
+elif command -v yay &>/dev/null; then
+    yay
 else
-  sudo pacman -Syu
-fi; 
+    sudo pacman -Syu
+fi
 
 exec zsh

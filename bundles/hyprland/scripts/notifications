@@ -4,6 +4,6 @@
 
 CONFIG_FILE="$HOME/.config/hypr/mako/config"
 
-if [[ ! `pidof mako` ]]; then
-	mako --config ${CONFIG_FILE}
+if [[ ! $(pidof mako) ]]; then
+    mako --config ${CONFIG_FILE}
 fi

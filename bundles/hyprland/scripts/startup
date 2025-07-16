@@ -4,14 +4,14 @@
 
 _ps=(waybar mako)
 for _prs in "${_ps[@]}"; do
-	if [[ `pidof ${_prs}` ]]; then
-		killall -9 ${_prs}
-	fi
+    if [[ $(pidof ${_prs}) ]]; then
+        killall -9 ${_prs}
+    fi
 done
 
 # Start polkit agent
-if [[ ! `pidof polkit-mate-authentication-agent-1` ]]; then
-	/usr/lib/mate-polkit/polkit-mate-authentication-agent-1 &
+if [[ ! $(pidof polkit-mate-authentication-agent-1) ]]; then
+    /usr/lib/mate-polkit/polkit-mate-authentication-agent-1 &
 fi
 
 # Set wallpaper
@@ -30,5 +30,5 @@ fi
 exec mpd &
 
 if [ ! -f "$HOME/.config/hypr/first.start" ]; then
-	alacritty --class "alacritty-float,alacritty-float" -e zsh -i -c "$HOME/.config/hypr/scripts/upgrade" &
+    alacritty --class "alacritty-float,alacritty-float" -e zsh -i -c "$HOME/.config/hypr/scripts/upgrade" &
 fi
