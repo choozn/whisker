@@ -21,7 +21,9 @@ fi
 ~/.config/hypr/scripts/gtktheme &
 
 # Lauch notification daemon
-~/.config/hypr/scripts/notifications &
+if [[ ! $(pidof mako) ]]; then
+    mako &
+fi
 
 # Lauch waybar
 ~/.config/hypr/scripts/waybar &
@@ -29,6 +31,7 @@ fi
 # Start mpd
 exec mpd &
 
+# Don't start upgrade after fresh install
 if [ ! -f "$HOME/.config/hypr/first.start" ]; then
     alacritty --class "alacritty-float,alacritty-float" -e zsh -i -c "$HOME/.config/hypr/scripts/upgrade" &
 fi
