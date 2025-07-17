@@ -29,20 +29,6 @@ EOF
     echo -e "[!] Don't worry, I'm a well-behaved kitty! No messes, just magic.\n"
 }
 
-install_yay() {
-    if ! command -v yay &>/dev/null; then
-        export base="$(pwd)"
-        sudo pacman -S --needed --noconfirm base-devel git
-        git clone https://aur.archlinux.org/yay-bin.git /tmp/buildyay
-        cd /tmp/buildyay
-        makepkg -o
-        makepkg -s --noconfirm
-        sudo pacman -U *.pkg.tar.zst --noconfirm
-        cd $base
-        rm -rf /tmp/buildyay
-    fi
-}
-
 # Installation config
 install_name="whisker"
 install_path="$HOME/${install_name}"
