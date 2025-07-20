@@ -32,7 +32,10 @@ EOF
 
     # Open custom install screen
     "$editor" "$tmp_file"
+    clear
     local bundles="$(get_bundles_from_install "$tmp_file")"
+
+    install_yay
 
     read -r -a bundles <<<"$bundles"
     install_bundles "${bundles[@]}"
