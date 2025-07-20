@@ -39,22 +39,12 @@ backup_folder="${backup_root}/${install_name}_backup_$(date +'%Y-%m-%d_%H-%M-%S'
 bundle_folder="bundles"
 bundle_config="bundle.conf"
 
-source ./whisker/bundle
-
 # Install Steps
 check_root
 greet
-request_sudo
-install_yay
 
-# Bundles
-mandatory_bundles=(system audio fonts hyprland waybar alacritty thunar psd gtk zsh)
-optional_bundles=(docker swap zen chromium common qemu nix ly syncthing)
-
-# Install mandatory bundles
-for bundle in "${mandatory_bundles[@]}"; do
-    install_bundle "${bundle}"
-done
+source ./whisker/main
+whisker
 
 echo -e "[!] Installation of all mandatory dependencies successful!"
 

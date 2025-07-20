@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-source whisker/util
-
 install_packages() {
     local packages=("$@")
 
@@ -113,4 +111,11 @@ install_bundle() {
     echo "[!] Installed ${title}."
     echo "[!] Unloading (bundle:${bundle_id})."
     unload_bundle
+}
+
+install_bundles() {
+    local bundles=("$@")
+    for bundle in "${bundles[@]}"; do
+        install_bundle "${bundle}"
+    done
 }

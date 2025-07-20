@@ -1,0 +1,91 @@
+#!/usr/bin/env bash
+
+installs_path="installs"
+
+get_bundles_from_install() {
+    local install_file="$1"
+    echo $(grep -vE '^\s*$|^\s*#' "$install_file" | xargs)
+}
+
+custom_install() {
+    local default_install="$installs_path/default"
+    local tmp_file
+    local editor="${EDITOR:-nano}" # Use system editor or fallback to nano
+
+    if [[ ! -f "$default_install" ]]; then
+        echo "Default install not found: $default_install"
+        return 1
+    fi
+
+    tmp_file="$(mktemp)"
+    trap 'rm -f "$tmp_file"' EXIT
+
+    cat >"$tmp_file" <<'EOF'
+# Hello there!
+# This is a temporary custom install configuration.
+#
+# Edit the lines below to suit your installation.
+# These lines can be re-ordered; they are executed from top to bottom.
+#
+# If you remove a line the respective bundle WILL NOT BE INSTALLED.
+
+EOF
+    cat "$default_install" >>"$tmp_file"
+
+    # Open custom install screen
+    "$editor" "$tmp_file"
+    local bundles="$(get_bundles_from_install "$tmp_file")"
+
+    read -r -a bundles <<<"$bundles"
+    install_bundles "${bundles[@]}"
+}
+
+install_whisker() {
+    local files=()
+    local bundles
+    local selected_file
+    local custom_option="custom"
+    local default_option="default"
+    local default_path="$installs_path/$default_option"
+
+    # Gather files in directory, excluding 'default'
+    while IFS= read -r -d $'\0' file; do
+        # Extract just the basename to check the filename
+        local basefile
+        basefile=$(basename "$file")
+        if [[ "$basefile" != "$default_option" ]]; then
+            files+=("$file")
+        fi
+    done < <(find "$installs_path" -maxdepth 1 -type f -print0)
+
+    # Append 'default' and 'custom' options explicitly
+    files+=("$default_option")
+    files+=("$custom_option")
+
+    # Check if any files or options
+    if [ ${#files[@]} -eq 0 ]; then
+        echo "No installs found in $installs_path"
+        return 1
+    fi
+
+    # Prompt user
+    echo "Select an install:"
+    select selected_file in "${files[@]}"; do
+        if [[ -z "$selected_file" ]]; then
+            echo "Invalid selection."
+        elif [[ "$selected_file" == "$custom_option" ]]; then
+            custom_install
+            # Can't handle installation here because this needs an interactive shell
+            break
+        elif [[ "$selected_file" == "$default_option" ]]; then
+            bundles=$(get_bundles_from_install "$default_path")
+            break
+        else
+            bundles=$(get_bundles_from_install "$selected_file")
+            break
+        fi
+    done
+
+    read -r -a bundles <<<"$bundles"
+    install_bundles "${bundles[@]}"
+}

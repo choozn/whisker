@@ -1,0 +1,9 @@
+source ./whisker/util
+source ./whisker/bundle
+source ./whisker/install
+
+whisker() {
+    request_sudo
+    install_yay
+    install_whisker
+}
