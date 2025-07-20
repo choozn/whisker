@@ -30,7 +30,7 @@ EOF
     echo "[!] To install the dotfiles and other dependencies, I'll need you to give me sudo privileges."
     echo -e "[!] Don't worry, I'm a well-behaved kitty! No messes, just magic.\n"
 }
-#
+
 # Install Steps
 check_root
 greet
