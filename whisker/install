@@ -8,7 +8,7 @@ custom_install() {
 
     local default_install="$installs_path/default"
     local tmp_file
-    local editor="${EDITOR:-vi}" # Use system editor or fallback to nano
+    local editor="${EDITOR:-vi}"
 
     if [[ ! -f "$default_install" ]]; then
         echo "Default install not found: $default_install"
@@ -84,6 +84,7 @@ install_whisker() {
         fi
     done
 
+    install_yay
     read -r -a bundles <<<"$bundles"
     install_bundles "${bundles[@]}"
 }

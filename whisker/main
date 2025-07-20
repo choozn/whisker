@@ -16,6 +16,5 @@ installs_path="installs"
 
 whisker() {
     request_sudo
-    install_yay
     install_whisker
 }
