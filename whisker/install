@@ -1,7 +1,3 @@
-#!/usr/bin/env bash
-
-installs_path="installs"
-
 get_bundles_from_install() {
     local install_file="$1"
     echo $(grep -vE '^\s*$|^\s*#' "$install_file" | xargs)

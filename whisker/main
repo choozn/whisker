@@ -2,6 +2,18 @@ source ./whisker/util
 source ./whisker/bundle
 source ./whisker/install
 
+# Installation config
+install_path="$(pwd)"
+install_name="$(basename $install_path)"
+backup_root="$HOME/${install_name}_backups"
+backup_folder="${backup_root}/${install_name}_backup_$(date +'%Y-%m-%d_%H-%M-%S')"
+
+# Whisker config
+bundle_folder="bundles"
+bundle_config="bundle.conf"
+
+installs_path="installs"
+
 whisker() {
     request_sudo
     install_yay

@@ -1,5 +1,3 @@
-#!/usr/bin/env bash
-
 install_packages() {
     local packages=("$@")
 
@@ -42,7 +40,6 @@ handle_install_error() {
 load_bundle() {
     local bundle="$1"
     bundle_path="${install_path}/${bundle_folder}/${bundle}"
-
     bundle_file="$bundle_path/${bundle_config}"
 
     if [ -f "$bundle_file" ]; then
