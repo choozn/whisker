@@ -27,10 +27,17 @@ chromium
 # Firmware updating tool
 firmware
 
-# Other lovely programs
-syncthing
+# Multimedia programs
+vlc
+zathura
+
+# Development utils
 docker
 nix
+
+# Virtualization
 qemu
-zathura
+
+# Common other programs
+syncthing
 common
