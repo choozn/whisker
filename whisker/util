@@ -119,7 +119,7 @@ safe_link() {
         return 1
     }
 
-    ln -sf "$src" "$dest" || {
+    sudo ln -sf "$src" "$dest" || {
         echo "[!] Failed to link $dest to $src."
         return 1
     }
