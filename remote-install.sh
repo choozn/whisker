@@ -2,6 +2,6 @@
 remote="https://github.com/choozn/whisker"
 
 # Install
-sudo pacman -S git
+sudo pacman --noconfirm -S git
 git clone "$remote"
 exec "./install.sh"
