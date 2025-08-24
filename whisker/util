@@ -105,7 +105,7 @@ safe_link() {
             return 1
         }
 
-        mv "$dest" "$backup_path" || {
+        sudo mv "$dest" "$backup_path" || {
             echo "[!] Failed to move existing $dest to backup $backup_path."
             return 1
         }
