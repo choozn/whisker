@@ -37,10 +37,5 @@ greet
 whisker
 
 # Done
-echo -e "[!] Installation of successful!"
-
-# Start Hyprland
-if [[ "$XDG_CURRENT_DESKTOP" != "Hyprland" ]]; then
-    touch "$HOME/.config/hypr/first.start"
-    Hyprland &
-fi
+echo -e "[!] Installation of successful! Rebooting."
+sudo systemctl soft-reboot
