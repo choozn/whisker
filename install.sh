@@ -5,7 +5,7 @@
 # Using a different distro and/or init system will lead to unwanted problems.
 #
 # To install in one line, run the following command:
-# curl -Ls dots.choozn.dev | bash
+# bash <(curl -sL dots.choozn.dev)
 
 source ./whisker/main
 
