@@ -58,8 +58,8 @@ fi
 
 eval wal $arguments
 
-# Generate .cache files
-wal -R
+# Prevent import error on first install
+hyprctl reload
 
 # Set gtk-theme
 gsettings set org.gnome.desktop.interface gtk-theme "$gtk_theme"
