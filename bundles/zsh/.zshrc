@@ -144,6 +144,15 @@ rebase() {
     git rebase --autosquash -i "$1"
   fi
 }
+absorb() {
+  if [[ "$1" == "root" || -z "$1" ]]; then
+    git absorb
+  elif [[ "$1" =~ ^[0-9]+$ ]]; then
+    git absorb --base "HEAD~$1"
+  else
+    git absorb --base "$1"
+  fi
+}
 
 # Config binds
 alias upgrade='$HOME/.config/hypr/scripts/upgrade'
