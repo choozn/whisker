@@ -34,26 +34,28 @@ if pgrep -x swaybg >/dev/null; then
 fi
 
 # PyWal
+theme_directory='$HOME/.theme'
+
 if [ -z "$wallpaper" ]; then
-    arguments+="--iterative -i '$HOME/.theme/wallpapers/' "
+    arguments+="--iterative -i \"$theme_directory/wallpapers/\" "
 else
-    arguments+="-i '$HOME/.theme/wallpapers/$wallpaper' "
+    arguments+="-i \"$theme_directory/wallpapers/$wallpaper\" "
 fi
 
 if [ -n "$wallpaper_theme_contrast" ]; then
-    arguments+="--contrast $wallpaper_theme_contrast "
+    arguments+="--contrast \"$wallpaper_theme_contrast\" "
 fi
 
 if [ -n "$wallpaper_theme_saturation" ]; then
-    arguments+="--saturate $wallpaper_theme_saturation "
+    arguments+="--saturate \"$wallpaper_theme_saturation\" "
 fi
 
 if [ "$wallpaper_theme_type" == "light" ]; then
     arguments+="-l "
 fi
 
-if [ -n "$custom_colors_file" ]; then
-    arguments+="--theme '$custom_colors_file' "
+if [ -n "$colors_file" ]; then
+    arguments+="--theme \"$theme_directory/$colors_file\" "
 fi
 
 eval wal $arguments
