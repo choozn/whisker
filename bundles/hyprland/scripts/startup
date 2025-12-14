@@ -25,6 +25,11 @@ if [[ ! $(pidof mako) ]]; then
     mako &
 fi
 
+# Lauch launcher server
+if [[ ! $(pidof vicinae) ]]; then
+    vicinae server &
+fi
+
 # Lauch waybar
 ~/.config/hypr/scripts/waybar &
 
