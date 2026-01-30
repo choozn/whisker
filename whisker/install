@@ -4,11 +4,11 @@ get_bundles_from_install() {
 }
 
 custom_install() {
-    install_packages vi
+    install_packages vim
 
     local base="$installs_path/everything"
     local tmp_file
-    local editor="${EDITOR:-vi}"
+    local editor="${EDITOR:-vim}"
 
     if [[ ! -f "$base" ]]; then
         echo "Base install file not found: $base"
