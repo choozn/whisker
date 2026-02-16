@@ -33,7 +33,7 @@ tooltip label {
 }
 
 window {
-  background-color: alpha(@background, 0.5);
+  background-color: alpha(@background, 0.75);
   transition-property: background-color;
   transition-duration: 0.4s;
   border-radius: 0px 0px 12px 12px;
@@ -73,7 +73,7 @@ window#waybar > * {
 #bluetooth,
 #backlight,
 #workspaces {
-  background-color: alpha(@background, 0.4);
+  background-color: alpha(@background, 0.6);
   padding: 0px 8px;
   border-radius: 12px;
   margin: 6px 2px;
