@@ -162,7 +162,8 @@ alias update='$HOME/.config/hypr/scripts/upgrade'
 alias zen='zen-browser'
 alias open='xdg-open'
 alias rgf='rg --files | rg'
-alias t='hyprctl dispatch exec "alacritty --working-directory $(pwd)" && clear'
+alias t='tmux'
+alias ta='tmux a'
 alias n='nix-shell'
 cdf() {
   local file
