@@ -35,6 +35,7 @@ fi
 
 # PyWal
 theme_directory='$HOME/.theme'
+arguments+="-a 80 "
 
 if [ -z "$wallpaper" ]; then
     arguments+="--iterative -i \"$theme_directory/wallpapers/\" "
