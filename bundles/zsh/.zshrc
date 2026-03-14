@@ -130,7 +130,7 @@ fixup() {
   if [[ "$1" == "root" ]]; then
     git commit --fixup $(git-root)
   elif [[ "$1" =~ ^[0-9]+$ ]]; then
-    git commit --fixup "HEAD~$1"
+    git commit --fixup "HEAD~$(( $1 - 1 ))"
   else
     git commit --fixup $1
   fi
