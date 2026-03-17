@@ -1,0 +1,4 @@
+feed_list_focused_width = "33%"
+article_list_focused_width = "100%"
+article_list_focused_height = "66%"
+article_content_focused_height = "100%"
