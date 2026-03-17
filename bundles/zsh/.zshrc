@@ -68,8 +68,11 @@ zstyle ':omz:update' mode disabled  # disable automatic updates
 # Would you like to use another custom folder than $ZSH/custom?
 # ZSH_CUSTOM=/path/to/new-custom-folder
 
+# Fix paste lag
+DISABLE_MAGIC_FUNCTIONS="true"
+
 # Pywal init
-(cat ~/.cache/wal/sequences &)
+[[ -f ~/.cache/wal/sequences ]] && (cat ~/.cache/wal/sequences &)
 
 # Which plugins would you like to load?
 # Standard plugins can be found in $ZSH/plugins/
@@ -77,19 +80,16 @@ zstyle ':omz:update' mode disabled  # disable automatic updates
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
 
-autoload -Uz compinit
-compinit -C
-
 plugins=(
     git
     sudo
     ssh-agent
     safe-paste
-    zsh-syntax-highlighting
     zsh-autosuggestions
     zsh-vi-mode
-    zsh-autocomplete
+    fzf-tab
     zsh-nvm
+    zsh-syntax-highlighting
 )
 
 source $ZSH/oh-my-zsh.sh
@@ -101,11 +101,7 @@ source $ZSH/oh-my-zsh.sh
 # You may need to manually set your language environment
 # export LANG=en_US.UTF-8
 
-if [[ -n $SSH_CONNECTION ]]; then
-  export EDITOR='nvim'
-else
-  export EDITOR='nvim'
-fi
+export EDITOR='nvim'
 
 # On-demand rehash
 zshcache_time="$(date +%s%N)"
@@ -180,6 +176,17 @@ cdf() {
   [ -n "$file" ] && cd "$(dirname "$file")"
 }
 
+# zsh-tab
+zstyle ':completion:*:git-checkout:*' sort false
+# NOTE: Don't use escape sequences (like '%F{red}%d%f') here, fzf-tab will ignore them
+zstyle ':completion:*:descriptions' format '[%d]'
+zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
+zstyle ':fzf-tab:complete:cd:*' fzf-preview 'eza -1 --color=always $realpath'
+# NOTE: This may lead to unexpected behavior since some flags break this plugin. See Aloxaf/fzf-tab#455.
+zstyle ':fzf-tab:*' use-fzf-default-opts yes
+zstyle ':fzf-tab:*' switch-group '<' '>'
+zstyle ':fzf-tab:*' fzf-flags --color=fg:1,fg+:2 --bind=tab:down,shift-tab:up
+
 # ZVM configuration
 ZSH_AUTOSUGGEST_STRATEGY=(history completion)
 ZVM_CURSOR_STYLE_ENABLED=true
@@ -188,42 +195,6 @@ ZVM_LINE_INIT_MODE=$ZVM_MODE_INSERT
 ZVM_READKEY_ENGINE=$ZVM_READKEY_ENGINE_ZLE
 ZVM_KEYTIMEOUT=0.2
 ZVM_VI_EDITOR=$EDITOR
-zvm_after_init_commands+=(
-    "bindkey '^[[A' up-line-or-search"
-    "bindkey '^[[B' down-line-or-search"
-    "bindkey '^I'   autosuggest-accept"
-
-    # For zsh-autocomplete menu navigation in vi mode
-    "bindkey -M viins      '^J' down-line-or-search"
-    "bindkey -M viins      '^K' up-line-or-search"
-    "bindkey -M vicmd      'j'  down-line-or-search"
-    "bindkey -M vicmd      'j'  menu-select"
-    "bindkey -M vicmd      'k'  up-line-or-search"
-    "bindkey -M menuselect 'j'  down-line-or-search"
-    "bindkey -M menuselect 'k'  up-line-or-search"
-
-    # Tab behavior
-    "bindkey               '^I' menu-complete"
-    "bindkey               '^I' menu-select"
-    "bindkey -M menuselect '^I' down-line-or-search"
-
-    # Autosuggestions
-    "bindkey '^E' autosuggest-accept"
-    "bindkey '^[[C' autosuggest-accept"
-
-    # Allow arrow key movement in menu
-    "bindkey -M menuselect  '^[[D' .backward-char  '^[OD' .backward-char"
-    "bindkey -M menuselect  '^[[C' .forward-char   '^[OC' .forward-char"
-
-    # Autocomplete configuration
-    "zstyle ':completion:*:cd:*' tag-order  '! (|*-)directories' -"
-    "zstyle ':autocomplete:*complete*:*' insert-unambiguous yes"
-    "zstyle ':autocomplete:*history*:*' insert-unambiguous yes"
-    "zstyle ':autocomplete:menu-search:*' insert-unambiguous yes"
-    "zstyle ':autocomplete:*' add-space '*'"
-    "zstyle ':autocomplete:*' remove-semicolon no"
-    "zstyle ':autocomplete:*' delay 0.1"
-)
 
 # Initialize zoxide
 eval "$(zoxide init zsh --cmd cd)"
