@@ -22,6 +22,9 @@ ly
 # UI File manager
 thunar
 
+# RSS Reader
+eilmeldung
+
 # Browser and profile sync deamon
 psd
 zen
