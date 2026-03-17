@@ -186,6 +186,7 @@ zstyle ':fzf-tab:complete:cd:*' fzf-preview 'eza -1 --color=always $realpath'
 zstyle ':fzf-tab:*' use-fzf-default-opts yes
 zstyle ':fzf-tab:*' switch-group '<' '>'
 zstyle ':fzf-tab:*' fzf-flags --color=fg:1,fg+:2 --bind=tab:down,shift-tab:up
+zstyle ':fzf-tab:*' fzf-command ftb-tmux-popup
 
 # ZVM configuration
 ZSH_AUTOSUGGEST_STRATEGY=(history completion)
