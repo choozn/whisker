@@ -58,5 +58,4 @@ request_sudo
 whisker
 
 # Done
-echo -e "[!] Installation was successful! Rebooting."
-sudo systemctl soft-reboot
+echo -e "[!] Installation was successful!."
