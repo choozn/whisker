@@ -150,6 +150,9 @@ absorb() {
   fi
 }
 
+# Media mounting
+alias unmount-media='sync && sudo umount -l /mnt/media && udisksctl power-off -b /dev/sdb'
+
 # Config binds
 alias upgrade='$HOME/.config/hypr/scripts/upgrade'
 alias update='$HOME/.config/hypr/scripts/upgrade'
