@@ -1,7 +1,8 @@
+
 -- ==========================================
 -- ANIMATIONS
+-- Whisker Theme
 -- Hyprland >= 0.55
--- https://wiki.hypr.land/configuring/core/animations/
 -- ==========================================
 
 hl.config({
@@ -10,18 +11,13 @@ hl.config({
     },
 })
 
--- Animation speeds
--- Hyprland speed units: 1 = 100ms
---
--- Replace these defaults with the values from
--- your original theme variables if necessary.
+-- Whisker animation timings
+local animation_speed = 3
+local animation_speed_secondary = 2.2
+local animation_speed_border_all = 3
+local animation_speed_border_inner = 1
 
-local animation_speed = 5
-local animation_speed_secondary = 3
-local animation_speed_border_all = 5
-local animation_speed_border_inner = 5
-
--- Helper
+-- Animation helper
 local function animation(leaf, speed, style)
     hl.animation({
         leaf = leaf,
@@ -32,65 +28,26 @@ local function animation(leaf, speed, style)
     })
 end
 
--- ==========================================
--- WINDOWS
--- ==========================================
+-- Windows
+animation("windowsIn", animation_speed_secondary, "popin 0%")
+animation("windowsOut", animation_speed, "popin")
+animation("windowsMove", animation_speed, "slide")
 
-animation("windowsIn",
-    animation_speed_secondary,
-    "popin 0%")
+-- Layers
+animation("layersIn", animation_speed, "slide")
+animation("layersOut", animation_speed, "slide")
 
-animation("windowsOut",
-    animation_speed,
-    "popin")
+-- Fade
+animation("fadeIn", animation_speed_secondary)
+animation("fadeOut", animation_speed)
+animation("fadeSwitch", animation_speed)
+animation("fadeShadow", animation_speed)
+animation("fadeDim", animation_speed)
+animation("fadeLayersIn", animation_speed_secondary)
+animation("fadeLayersOut", animation_speed)
 
-animation("windowsMove",
-    animation_speed,
-    "slide")
-
--- ==========================================
--- LAYERS
--- ==========================================
-
-animation("layersIn",
-    animation_speed,
-    "slide")
-
-animation("layersOut",
-    animation_speed,
-    "slide")
-
--- ==========================================
--- FADE
--- ==========================================
-
-animation("fadeIn",
-    animation_speed_secondary)
-
-animation("fadeOut",
-    animation_speed)
-
-animation("fadeSwitch",
-    animation_speed)
-
-animation("fadeShadow",
-    animation_speed)
-
-animation("fadeDim",
-    animation_speed)
-
-animation("fadeLayersIn",
-    animation_speed_secondary)
-
-animation("fadeLayersOut",
-    animation_speed)
-
--- ==========================================
--- BORDERS
--- ==========================================
-
-animation("border",
-    animation_speed_border_all)
+-- Borders
+animation("border", animation_speed_border_all)
 
 hl.animation({
     leaf = "borderangle",
@@ -100,18 +57,8 @@ hl.animation({
     style = "once",
 })
 
--- ==========================================
--- WORKSPACES
--- ==========================================
+-- Workspaces
+animation("workspaces", animation_speed, "slide")
 
-animation("workspaces",
-    animation_speed,
-    "slide")
-
--- ==========================================
--- SPECIAL WORKSPACES
--- ==========================================
-
-animation("specialWorkspace",
-    animation_speed,
-    "fade")
+-- Special workspaces
+animation("specialWorkspace", animation_speed, "fade")
