@@ -119,7 +119,6 @@ hl.config({
         key_press_enables_dpms = false,
 
         always_follow_on_dnd = true,
-        layers_hog_keyboard_focus = true,
 
         animate_manual_resizes = false,
         animate_mouse_windowdragging = false,
