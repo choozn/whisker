@@ -1,16 +1,15 @@
-
--- Copyright (C) 2025 choozn
--- Converted to Hyprland Lua configuration (0.55+)
--- Reference: https://wiki.hypr.land/configuring/core/binds/
--- Find key names using wev
+-- Copyright (C) 2026 choozn
+-- Hyprland native Lua configuration
+-- https://wiki.hypr.land/configuring/core/binds/
+-- Find binds using wev
 
 -- ==========================================
--- Variables
+-- COMMANDS
 -- ==========================================
 
 local notify = "notify-send -h string:x-canonical-private-synchronous:hypr-cfg -u low"
 
-local scripts = "~/.config/hypr/scripts/"
+local scripts = os.getenv("HOME") .. "/.config/hypr/scripts/"
 
 local cmd = {
     alacritty     = scripts .. "alacritty",
@@ -30,68 +29,58 @@ local cmd = {
     toggleswallow = scripts .. "toggleswallow",
 }
 
-local browser     = "zen-browser"
-local launcher    = "vicinae open"
-local bluetooth   = "blueman-manager"
-local patchman    = "helvum"
-local displayman  = "nwg-displays"
+local browser    = "zen-browser"
+local launcher   = "vicinae open"
+local bluetooth  = "blueman-manager"
+local patchman   = "helvum"
+local displayman = "nwg-displays"
 
--- ==========================================
--- Helpers
--- ==========================================
-
--- Execute external commands without blocking Lua callbacks.
 local function exec(command)
     return hl.dsp.exec_cmd(command)
 end
 
--- Compatibility helper for existing Hyprland dispatchers.
-local function dispatch(name, args)
-    local command = "hyprctl dispatch " .. name
-
-    if args and args ~= "" then
-        command = command .. " " .. args
-    end
-
-    return exec(command)
-end
-
--- Run multiple actions on one keybind.
-local function actions(key, callback, flags)
-    hl.bind(key, callback, flags)
+local function run(command)
+    hl.dispatch(hl.dsp.exec_cmd(command))
 end
 
 local function notify_user(message)
-    return exec(notify .. " " .. "'" .. message .. "'")
+    run(notify .. " '" .. message .. "'")
 end
 
-local function terminal(command)
-    return exec(cmd.alacritty .. " " .. command)
+local function terminal(args)
+    run(cmd.alacritty .. " " .. args)
 end
 
 -- ==========================================
--- Group
+-- GROUP
 -- ==========================================
 
-actions("SUPER + G", function()
+hl.bind("SUPER + G", function()
     hl.dispatch(hl.dsp.group.toggle())
-    hl.dispatch(hl.dsp.exec_cmd(
-        notify .. " 'Toggled Group Mode'"
-    ))
+    notify_user("Toggled Group Mode")
 end)
 
 -- ==========================================
--- Applications
+-- APPLICATIONS
 -- ==========================================
 
 -- Terminal
-hl.bind("SUPER + Return", exec(cmd.alacritty))
-hl.bind("SUPER + Return", exec(cmd.fullscreen))
+hl.bind("SUPER + Return", function()
+    run(cmd.alacritty)
+    run(cmd.fullscreen)
+end)
 
-hl.bind("SUPER + SHIFT + Return", exec(cmd.alacritty .. " -f"))
-hl.bind("SUPER + T", exec(cmd.alacritty .. " -F"))
-hl.bind("SUPER + SHIFT + T", exec(cmd.alacritty .. " -F"))
-hl.bind("SUPER + ALT + Return", exec(cmd.alacritty .. " -f"))
+hl.bind("SUPER + SHIFT + Return",
+    exec(cmd.alacritty .. " -f"))
+
+hl.bind("SUPER + T",
+    exec(cmd.alacritty .. " -F"))
+
+hl.bind("SUPER + SHIFT + T",
+    exec(cmd.alacritty .. " -F"))
+
+hl.bind("SUPER + ALT + Return",
+    exec(cmd.alacritty .. " -f"))
 
 -- Editor
 hl.bind("SUPER + E",
@@ -116,7 +105,7 @@ hl.bind("SUPER + N",
 -- Bluetooth
 hl.bind("SUPER + B", exec(bluetooth))
 
--- Systemd services
+-- Systemd manager
 hl.bind("SUPER + V",
     exec(cmd.alacritty .. " -F -e " .. cmd.systemd))
 
@@ -137,10 +126,9 @@ hl.bind("CTRL + ALT + L", exec("hyprlock"))
 hl.bind("SUPER + Escape", exec("hyprlock"))
 
 -- ==========================================
--- Brightness and volume
+-- BRIGHTNESS
 -- ==========================================
 
--- Brightness
 hl.bind("XF86MonBrightnessUp",
     exec("brightnessctl set 5%+"),
     { repeating = true })
@@ -149,7 +137,10 @@ hl.bind("XF86MonBrightnessDown",
     exec("brightnessctl set 5%-"),
     { repeating = true })
 
--- Volume
+-- ==========================================
+-- VOLUME
+-- ==========================================
+
 hl.bind("XF86AudioRaiseVolume",
     exec(cmd.volume .. " --inc"),
     { repeating = true })
@@ -165,7 +156,7 @@ hl.bind("XF86AudioMicMute",
     exec(cmd.volume .. " --toggle-mic"))
 
 -- ==========================================
--- Media controls
+-- MEDIA
 -- ==========================================
 
 hl.bind("XF86AudioNext", exec("mpc next"))
@@ -174,10 +165,11 @@ hl.bind("XF86AudioPlay", exec("mpc toggle"))
 hl.bind("XF86AudioStop", exec("mpc stop"))
 
 -- ==========================================
--- Hardware keys
+-- HARDWARE KEYS
 -- ==========================================
 
 hl.bind("XF86Display", exec(displayman))
+
 hl.bind("XF86WLAN",
     exec(cmd.alacritty .. " -F -e " .. cmd.network))
 
@@ -187,23 +179,19 @@ hl.bind("XF86Tools",
 hl.bind("XF86Bluetooth", exec(bluetooth))
 
 -- Cursor toggle
-actions("XF86Favorites", function()
-    hl.dispatch(hl.dsp.exec_cmd(cmd.hidecursor))
-    hl.dispatch(hl.dsp.exec_cmd(
-        notify .. " 'Toggled Cursor Mode'"
-    ))
+hl.bind("XF86Favorites", function()
+    run(cmd.hidecursor)
+    notify_user("Toggled Cursor Mode")
 end)
 
 -- Swallow toggle
-actions("SHIFT + XF86Favorites", function()
-    hl.dispatch(hl.dsp.exec_cmd(cmd.toggleswallow))
-    hl.dispatch(hl.dsp.exec_cmd(
-        notify .. " 'Toggled Swallow Mode'"
-    ))
+hl.bind("SHIFT + XF86Favorites", function()
+    run(cmd.toggleswallow)
+    notify_user("Toggled Swallow Mode")
 end)
 
 -- ==========================================
--- Screenshots
+-- SCREENSHOTS
 -- ==========================================
 
 hl.bind("Print", exec(cmd.screenshot))
@@ -214,68 +202,68 @@ hl.bind("SUPER + Print", exec(cmd.screenshot))
 hl.bind("SUPER + SHIFT + S", exec(cmd.screenshot))
 
 -- ==========================================
--- Window management
+-- WINDOW MANAGEMENT
 -- ==========================================
 
-hl.bind("SUPER + Q", dispatch("killactive"))
-hl.bind("SUPER + C", dispatch("killactive"))
-hl.bind("SUPER + SHIFT + C", dispatch("killactive"))
-hl.bind("SUPER + ALT + C", dispatch("killactive"))
-hl.bind("SUPER + CTRL + C", dispatch("killactive"))
+-- Close active window
+hl.bind("SUPER + Q", hl.dsp.window.close())
+hl.bind("SUPER + C", hl.dsp.window.close())
+hl.bind("SUPER + SHIFT + C", hl.dsp.window.close())
+hl.bind("SUPER + ALT + C", hl.dsp.window.close())
+hl.bind("SUPER + CTRL + C", hl.dsp.window.close())
 
 -- Exit Hyprland
-hl.bind("CTRL + ALT + Delete", dispatch("exit"))
+hl.bind("CTRL + ALT + Delete", hl.dsp.exit())
 
 -- Fullscreen
-hl.bind("SUPER + F", dispatch("fullscreen", "0"))
+hl.bind("SUPER + F",
+    hl.dsp.window.fullscreen({ action = "toggle" }))
 
 -- Pseudotiling
-hl.bind("SUPER + S", dispatch("pseudo"))
+hl.bind("SUPER + S", hl.dsp.window.pseudo())
 
--- Floating
+-- Floating and centering
 hl.bind("SUPER + Space", function()
-    hl.dispatch(hl.dsp.exec_cmd(
-        "hyprctl dispatch togglefloating"
-    ))
-    hl.dispatch(hl.dsp.exec_cmd(
-        "hyprctl dispatch centerwindow"
-    ))
+    hl.dispatch(hl.dsp.window.float())
+    hl.dispatch(hl.dsp.window.center())
 end)
 
 -- ==========================================
--- Focus movement
+-- WINDOW FOCUS
 -- ==========================================
 
--- Arrow keys
-hl.bind("SUPER + Left", dispatch("movefocus", "l"))
-hl.bind("SUPER + Right", dispatch("movefocus", "r"))
-hl.bind("SUPER + Up", dispatch("movefocus", "u"))
-hl.bind("SUPER + Down", dispatch("movefocus", "d"))
+local directions = {
+    { "Left", "left" },
+    { "Right", "right" },
+    { "Up", "up" },
+    { "Down", "down" },
 
--- Vim keys
-hl.bind("SUPER + H", dispatch("movefocus", "l"))
-hl.bind("SUPER + L", dispatch("movefocus", "r"))
-hl.bind("SUPER + K", dispatch("movefocus", "u"))
-hl.bind("SUPER + J", dispatch("movefocus", "d"))
+    { "H", "left" },
+    { "L", "right" },
+    { "K", "up" },
+    { "J", "down" },
+}
 
--- ==========================================
--- Move windows
--- ==========================================
-
--- Arrow keys
-hl.bind("SUPER + SHIFT + Left", dispatch("movewindow", "l"))
-hl.bind("SUPER + SHIFT + Right", dispatch("movewindow", "r"))
-hl.bind("SUPER + SHIFT + Up", dispatch("movewindow", "u"))
-hl.bind("SUPER + SHIFT + Down", dispatch("movewindow", "d"))
-
--- Vim keys
-hl.bind("SUPER + SHIFT + H", dispatch("movewindow", "l"))
-hl.bind("SUPER + SHIFT + L", dispatch("movewindow", "r"))
-hl.bind("SUPER + SHIFT + K", dispatch("movewindow", "u"))
-hl.bind("SUPER + SHIFT + J", dispatch("movewindow", "d"))
+for _, b in ipairs(directions) do
+    hl.bind("SUPER + " .. b[1],
+        hl.dsp.focus({ direction = b[2] }))
+end
 
 -- ==========================================
--- Resize windows
+-- MOVE TILED WINDOWS
+-- ==========================================
+
+for _, b in ipairs(directions) do
+    hl.bind(
+        "SUPER + SHIFT + " .. b[1],
+        hl.dsp.window.move({
+            direction = b[2]
+        })
+    )
+end
+
+-- ==========================================
+-- RESIZE WINDOWS
 -- ==========================================
 
 local resize_binds = {
@@ -290,43 +278,39 @@ local resize_binds = {
     { "J",       0,  20 },
 }
 
-for _, bind in ipairs(resize_binds) do
+for _, b in ipairs(resize_binds) do
     hl.bind(
-        "SUPER + CTRL + " .. bind[1],
-        dispatch("resizeactive", bind[2] .. " " .. bind[3]),
+        "SUPER + CTRL + " .. b[1],
+        hl.dsp.window.resize({
+            x = b[2],
+            y = b[3],
+            relative = true
+        }),
         { repeating = true }
     )
 end
 
 -- ==========================================
--- Move floating windows
+-- MOVE FLOATING WINDOWS
 -- ==========================================
 
-local move_binds = {
-    { "Left",  -20,   0 },
-    { "Right",  20,   0 },
-    { "Up",      0, -20 },
-    { "Down",    0,  20 },
-
-    { "H",     -20,   0 },
-    { "L",      20,   0 },
-    { "K",       0, -20 },
-    { "J",       0,  20 },
-}
-
-for _, bind in ipairs(move_binds) do
+for _, b in ipairs(resize_binds) do
     hl.bind(
-        "SUPER + ALT + " .. bind[1],
-        dispatch("moveactive", bind[2] .. " " .. bind[3]),
+        "SUPER + ALT + " .. b[1],
+        hl.dsp.window.move({
+            x = b[2],
+            y = b[3],
+            relative = true
+        }),
         { repeating = true }
     )
 end
 
 -- ==========================================
--- Window cycling
+-- WINDOW CYCLING
 -- ==========================================
 
-actions("SUPER + Tab", function()
+hl.bind("SUPER + Tab", function()
     hl.dispatch(hl.dsp.window.cycle_next())
     hl.dispatch(hl.dsp.window.alter_zorder({
         mode = "top"
@@ -334,93 +318,91 @@ actions("SUPER + Tab", function()
 end)
 
 -- ==========================================
--- Workspaces
+-- WORKSPACES
 -- ==========================================
 
 for i = 1, 9 do
     hl.bind(
         "SUPER + " .. i,
-        dispatch("workspace", tostring(i))
+        hl.dsp.focus({ workspace = tostring(i) })
     )
 
     hl.bind(
         "SUPER + SHIFT + " .. i,
-        dispatch("movetoworkspace", tostring(i))
+        hl.dsp.window.move({
+            workspace = tostring(i)
+        })
     )
 end
 
-hl.bind("SUPER + 0", dispatch("workspace", "10"))
+hl.bind("SUPER + 0",
+    hl.dsp.focus({ workspace = "10" }))
+
 hl.bind("SUPER + SHIFT + 0",
-    dispatch("movetoworkspace", "10"))
+    hl.dsp.window.move({ workspace = "10" }))
 
 -- Previous / next workspace
 hl.bind("CTRL + ALT + Left",
-    dispatch("workspace", "e-1"))
+    hl.dsp.focus({ workspace = "e-1" }))
 
 hl.bind("CTRL + ALT + Right",
-    dispatch("workspace", "e+1"))
+    hl.dsp.focus({ workspace = "e+1" }))
 
--- Move window to previous / next workspace
+-- Move windows to previous / next workspace
 hl.bind("CTRL + ALT + SHIFT + Left",
-    dispatch("movetoworkspace", "e-1"))
+    exec("hyprctl dispatch movetoworkspace e-1"))
 
 hl.bind("CTRL + ALT + SHIFT + Right",
-    dispatch("movetoworkspace", "e+1"))
+    exec("hyprctl dispatch movetoworkspace e+1"))
 
 -- ==========================================
--- Monitor focus
+-- MONITOR FOCUS
 -- ==========================================
 
-hl.bind("SUPER + O", dispatch("focusmonitor", "+1"))
-hl.bind("SUPER + SHIFT + O", dispatch("focusmonitor", "-1"))
+hl.bind("SUPER + O",
+    hl.dsp.focus({ monitor = "+1" }))
+
+hl.bind("SUPER + SHIFT + O",
+    hl.dsp.focus({ monitor = "-1" }))
 
 -- ==========================================
--- Workspace options
+-- WORKSPACE OPTIONS
 -- ==========================================
 
-actions("SUPER + CTRL + F", function()
-    hl.dispatch(hl.dsp.exec_cmd(
-        "hyprctl dispatch workspaceopt allfloat"
-    ))
-    hl.dispatch(hl.dsp.exec_cmd(
-        notify .. " 'Toggled All Float Mode'"
-    ))
+hl.bind("SUPER + CTRL + F", function()
+    run("hyprctl dispatch workspaceopt allfloat")
+    notify_user("Toggled All Float Mode")
 end)
 
-actions("SUPER + CTRL + S", function()
-    hl.dispatch(hl.dsp.exec_cmd(
-        "hyprctl dispatch workspaceopt allpseudo"
-    ))
-    hl.dispatch(hl.dsp.exec_cmd(
-        notify .. " 'Toggled All Pseudo Mode'"
-    ))
+hl.bind("SUPER + CTRL + S", function()
+    run("hyprctl dispatch workspaceopt allpseudo")
+    notify_user("Toggled All Pseudo Mode")
 end)
 
 -- ==========================================
--- Pin
+-- PIN
 -- ==========================================
 
-actions("SUPER + SHIFT + P", function()
-    hl.dispatch(hl.dsp.exec_cmd("hyprctl dispatch pin"))
-    hl.dispatch(hl.dsp.exec_cmd(
-        notify .. " 'Toggled Pin'"
-    ))
-end)
+hl.bind("SUPER + SHIFT + P",
+    hl.dsp.window.pin())
 
 -- ==========================================
--- Mouse binds
+-- MOUSE BINDS
 -- ==========================================
 
+-- SUPER + Left mouse: move window
 hl.bind("SUPER + mouse:272",
-    dispatch("movewindow"),
+    hl.dsp.window.drag(),
     { mouse = true })
 
+-- SUPER + Right mouse: resize window
 hl.bind("SUPER + mouse:273",
-    dispatch("resizewindow"),
+    hl.dsp.window.resize(),
     { mouse = true })
 
 -- ==========================================
--- Reload configuration
+-- RELOAD
 -- ==========================================
 
-hl.bind("SUPER + R", exec(cmd.reload))
+hl.bind("SUPER + R",
+    exec(cmd.reload))
