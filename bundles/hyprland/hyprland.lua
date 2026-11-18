@@ -3,7 +3,7 @@
 require("lua.bindings")
 require("lua.settings")
 require("lua.input")
-require("lua.monitors")
+require("monitors")
 require("lua.rules")
 require("lua.animations")
 require("lua.startup")
