@@ -6,7 +6,7 @@ hl.config({
         natural_scroll = false,
         numlock_by_default = false,
         resolve_binds_by_sym = false,
-        sensitivity = 4.0,
+        sensitivity = 1.0,
         accel_profile = "flat",
         force_no_accel = false,
         left_handed = false,
@@ -26,9 +26,7 @@ hl.config({
             scroll_factor = 1.0,
             middle_button_emulation = false,
             clickfinger_behavior = false,
-            ["tap-to-click"] = true,
             drag_lock = false,
-            ["tap-and-drag"] = true,
         },
 
         touchdevice = {

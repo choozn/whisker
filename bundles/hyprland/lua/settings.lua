@@ -1,4 +1,3 @@
-
 -- General
 hl.config({
     general = {
