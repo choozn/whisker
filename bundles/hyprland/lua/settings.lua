@@ -52,7 +52,7 @@ hl.config({
         split_width_multiplier = 1.0,
         use_active_for_splits = true,
         default_split_ratio = 1.0,
-        split_bias = 2,
+        split_bias = 1,
     },
 
     misc = {
