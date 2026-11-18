@@ -1,0 +1,51 @@
+
+hl.config({
+    input = {
+        kb_layout = "de",
+        kb_variant = "neo_qwertz",
+        natural_scroll = false,
+        numlock_by_default = false,
+        resolve_binds_by_sym = false,
+        sensitivity = 4.0,
+        accel_profile = "flat",
+        force_no_accel = false,
+        left_handed = false,
+        scroll_method = "2fg",
+        scroll_button = 0,
+        scroll_button_lock = 0,
+        scroll_factor = 1.0,
+        follow_mouse = 1,
+        mouse_refocus = true,
+        float_switch_override_focus = 1,
+        special_fallthrough = false,
+        off_window_axis_events = 1,
+
+        touchpad = {
+            disable_while_typing = true,
+            natural_scroll = false,
+            scroll_factor = 1.0,
+            middle_button_emulation = false,
+            clickfinger_behavior = false,
+            ["tap-to-click"] = true,
+            drag_lock = false,
+            ["tap-and-drag"] = true,
+        },
+
+        touchdevice = {
+            enabled = true,
+            transform = 0,
+        },
+    },
+
+    gestures = {
+        workspace_swipe_distance = 350,
+        workspace_swipe_touch = false,
+        workspace_swipe_invert = true,
+        workspace_swipe_min_speed_to_force = 20,
+        workspace_swipe_cancel_ratio = 0.5,
+        workspace_swipe_create_new = true,
+        workspace_swipe_direction_lock = false,
+        workspace_swipe_forever = true,
+        workspace_swipe_use_r = false,
+    },
+})
