@@ -4,15 +4,6 @@
 -- https://wiki.hypr.land/configuring/core/config-options/
 
 -- ==========================================
--- MODULES
--- ==========================================
-
-require("hyprbinds")
-require("hyprrules")
-require("hyprmonitor")
-require("hyprinput")
-
--- ==========================================
 -- THEME COLORS
 -- ==========================================
 
