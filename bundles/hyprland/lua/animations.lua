@@ -1,9 +1,7 @@
-
--- ==========================================
--- ANIMATIONS
--- Whisker Theme
+-- Copyright (C) 2025 choozn
+-- Whisker animations
 -- Hyprland >= 0.55
--- ==========================================
+-- https://wiki.hypr.land/configuring/core/animations/
 
 hl.config({
     animations = {
@@ -11,54 +9,51 @@ hl.config({
     },
 })
 
--- Whisker animation timings
-local animation_speed = 3
-local animation_speed_secondary = 2.2
-local animation_speed_border_all = 3
-local animation_speed_border_inner = 1
+-- Whisker animation speeds
+local speed = 3
+local secondary = 2.2
+local border_all = 3
+local border_inner = 1
 
--- Animation helper
-local function animation(leaf, speed, style)
+local function anim(leaf, duration, style)
     hl.animation({
         leaf = leaf,
         enabled = true,
-        speed = speed,
+        speed = duration,
         bezier = "default",
         style = style,
     })
 end
 
 -- Windows
-animation("windowsIn", animation_speed_secondary, "popin 0%")
-animation("windowsOut", animation_speed, "popin")
-animation("windowsMove", animation_speed, "slide")
+anim("windowsIn", secondary, "popin 0%")
+anim("windowsOut", speed, "popin")
+anim("windowsMove", speed, "slide")
 
 -- Layers
-animation("layersIn", animation_speed, "slide")
-animation("layersOut", animation_speed, "slide")
+anim("layersIn", secondary, "slide")
+anim("layersOut", speed, "slide")
 
 -- Fade
-animation("fadeIn", animation_speed_secondary)
-animation("fadeOut", animation_speed)
-animation("fadeSwitch", animation_speed)
-animation("fadeShadow", animation_speed)
-animation("fadeDim", animation_speed)
-animation("fadeLayersIn", animation_speed_secondary)
-animation("fadeLayersOut", animation_speed)
+anim("fadeIn", secondary)
+anim("fadeOut", speed)
+anim("fadeSwitch", speed)
+anim("fadeShadow", speed)
+anim("fadeDim", speed)
+anim("fadeLayersIn", secondary)
+anim("fadeLayersOut", speed)
 
 -- Borders
-animation("border", animation_speed_border_all)
+anim("border", border_all)
 
 hl.animation({
     leaf = "borderangle",
     enabled = true,
-    speed = animation_speed_border_inner,
+    speed = border_inner,
     bezier = "default",
     style = "once",
 })
 
 -- Workspaces
-animation("workspaces", animation_speed, "slide")
-
--- Special workspaces
-animation("specialWorkspace", animation_speed, "fade")
+anim("workspaces", speed, "slide")
+anim("specialWorkspace", speed, "fade")
