@@ -28,6 +28,7 @@ eilmeldung
 # Browser and profile sync deamon
 psd
 zen
+firefox
 chromium
 
 # Firmware updating tool
@@ -40,6 +41,7 @@ zathura
 # Development utils
 docker
 nix
+vscode
 
 # Virtualization
 qemu
